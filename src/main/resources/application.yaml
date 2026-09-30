@@ -8,5 +8,6 @@ server:
 aws:
   region: us-east-1
   s3:
-    endpoint: http://localhost:4566
+    # Uses AWS_S3_ENDPOINT env variable if provided, defaults to http://localhost:4566
+    endpoint: ${AWS_S3_ENDPOINT:http://localhost:4566}
     bucket-name: my-test-bucket

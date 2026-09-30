@@ -21,23 +21,27 @@ public class StorageController {
 
     @PostMapping("/init")
     public ResponseEntity<String> initializeServices() {
-        storageService.createBucket();
+        storageService.createBucketIfNotExists();
         sqsService.initQueue(); // Creates 'file-events-queue' if it doesn't exist
         return ResponseEntity.ok("S3 Bucket and SQS Queue initialized successfully!");
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam String fileName, @RequestBody String content) {
-        storageService.uploadFile(fileName, content);
 
-        // Publish SQS event
-        sqsService.sendFileUploadEvent(fileName);
-
-        return ResponseEntity.ok("File uploaded to S3 and event published to SQS!");
+    @GetMapping("/presigned-download")
+    public ResponseEntity<String> getPresignedDownloadUrl(@RequestParam String fileName) {
+        String url = storageService.generatePresignedDownloadUrl(fileName);
+        return ResponseEntity.ok(url);
     }
 
-    @GetMapping("/download")
-    public String download(@RequestParam String fileName) {
-        return storageService.downloadFile(fileName);
+    @GetMapping("/presigned-upload")
+    public ResponseEntity<String> getPresignedUploadUrl(@RequestParam String fileName) {
+        String url = storageService.generatePresignedUploadUrl(fileName);
+        return ResponseEntity.ok(url);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteFile(@RequestParam String fileName) {
+        storageService.deleteFile(fileName);
+        return ResponseEntity.ok("File deleted successfully from S3: " + fileName);
     }
 }

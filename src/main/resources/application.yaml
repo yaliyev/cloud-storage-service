@@ -19,6 +19,8 @@ aws:
   s3:
     # Uses AWS_S3_ENDPOINT env variable if provided, defaults to http://localhost:4566
     endpoint: ${AWS_S3_ENDPOINT:http://localhost:4566}
+    # External endpoint returned to clients for direct upload/download
+    external-endpoint: ${AWS_S3_EXTERNAL_ENDPOINT:http://localhost:4566}
     bucket-name: my-test-bucket
   sqs:
     endpoint: ${AWS_SQS_ENDPOINT:http://localhost:4566}

@@ -19,13 +19,17 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Use enforcedPlatform to override spring-cloud-aws transitive versions
+    implementation enforcedPlatform('software.amazon.awssdk:bom:2.25.0')
     implementation 'software.amazon.awssdk:s3'
     implementation 'software.amazon.awssdk:sqs'
-    implementation platform('software.amazon.awssdk:bom:2.25.0')
+
+    // Spring Cloud AWS
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs:4.0.0'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {

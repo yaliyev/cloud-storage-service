@@ -23,7 +23,8 @@ public class StorageController {
     public ResponseEntity<String> initializeServices() {
         storageService.createBucketIfNotExists();
         sqsService.initQueue(); // Creates 'file-events-queue' if it doesn't exist
-        return ResponseEntity.ok("S3 Bucket and SQS Queue initialized successfully!");
+        storageService.configureS3BucketNotifications(); // Connects S3 -> SQS
+        return ResponseEntity.ok("S3 Bucket, SQS Queue, and Notifications initialized successfully!");
     }
 
 

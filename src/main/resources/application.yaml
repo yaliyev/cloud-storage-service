@@ -1,6 +1,15 @@
 spring:
   application:
     name: cloud-storage-service
+  cloud:
+    aws:
+      region:
+        static: us-east-1
+      credentials:
+        access-key: test
+        secret-key: test
+      sqs:
+        endpoint: ${AWS_SQS_ENDPOINT:http://localhost:4566}
 
 server:
   port: 8080
@@ -11,3 +20,5 @@ aws:
     # Uses AWS_S3_ENDPOINT env variable if provided, defaults to http://localhost:4566
     endpoint: ${AWS_S3_ENDPOINT:http://localhost:4566}
     bucket-name: my-test-bucket
+  sqs:
+    endpoint: ${AWS_SQS_ENDPOINT:http://localhost:4566}

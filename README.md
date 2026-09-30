@@ -1,129 +1,132 @@
-\# Cloud Storage Service
+# Cloud Storage \& Event Processing Service
 
 
 
-A production-ready Spring Boot 3 microservice that integrates with AWS S3 using AWS SDK v2, fully containerized with Docker Compose and emulated locally using LocalStack.
+A production-ready Spring Boot 3 microservice integrating AWS S3 for object storage and AWS SQS for event-driven messaging using Spring Cloud AWS v4. The entire stack is containerized with Docker Compose and emulated locally via LocalStack.
 
 
 
-\---
+---
 
 
 
-\## 🏗️ Architecture Overview
-
-+-------------------------------------------------------+
-
-|                    Docker Compose                     |
-
-|                                                       |
-
-|   +--------------------+     +--------------------+   |
-
-|   |  Spring Boot App   | --> |     LocalStack     |   |
-
-|   |   (Port 8080)      |     |  (AWS S3 - 4566)   |   |
-
-|   +--------------------+     +--------------------+   |
-
-+-------------------------------------------------------+
-
-
-Spring Boot 3 (Java 21): Exposes REST APIs for cloud storage operations.
+## 🏗️ Architecture Overview
 
 
 
-AWS SDK v2 (S3Client): Manages object storage operations targeting AWS S3.
+```text
+
+&#x20;                                        +-----------------------+
+
+&#x20;                                        |     LocalStack S3     |
+
+&#x20;                                        +-----------------------+
+
+&#x20;                                                    ^
+
+&#x20;                                                    | (Upload File)
+
++-----------------------+                    +-------+---------------+
+
+|      HTTP Client      | -- (POST File) --> |   Spring Boot App     |
+
++-----------------------+                    +-------+---------------+
+
+&#x20;                                                    |
+
+&#x20;                                                    | (Publish Event)
+
+&#x20;                                                    v
+
+&#x20;                                        +-----------------------+
+
+&#x20;                                        |     LocalStack SQS    |
+
+&#x20;                                        +-----------+-----------+
+
+&#x20;                                                    |
+
+&#x20;                                                    | (@SqsListener)
+
+&#x20;                                                    v
+
+&#x20;                                        +-----------------------+
+
+&#x20;                                        |  Background Consumer  |
+
+&#x20;                                        +-----------------------+
 
 
 
-LocalStack: Local cloud stack emulator running S3 in Docker.
+Spring Boot 3 (Java 21): Exposes REST APIs and consumes asynchronous background events.
 
 
 
-Docker \& Docker Compose: Containerizes and orchestrates the application and services environment.
+AWS S3 (S3Client): Handles object uploads and downloads.
 
 
 
-🛠️ Tech Stack \& Prerequisites
+AWS SQS (@SqsListener): Processes decoupled file-upload notification events asynchronously.
+
+
+
+Spring Cloud AWS (4.0.0): Manages reactive SQS listener container lifecycle and polling.
+
+
+
+LocalStack & Docker Compose: Containerizes AWS cloud dependencies locally.
+
+
+
+🛠️ Tech Stack
 
 Java 21 / Spring Boot 3.x
 
 
 
-Gradle
+AWS SDK v2 \& Spring Cloud AWS 4.0.0
 
 
 
-AWS SDK for Java v2 (software.amazon.awssdk:s3)
+Docker & Docker Compose
 
 
 
-Docker Desktop (WSL2 backend on Windows)
+LocalStack (S3 + SQS)
 
 
-
-LocalStack
 
 🚀 Quick Start
 
-1\. Clone the Repository
-
-Bash
-
-git clone \[https://github.com/yaliyev/cloud-storage-service.git](https://github.com/yaliyev/cloud-storage-service.git)
-
-cd cloud-storage-service
-
-2. Configure Environment Variables
-
-Create a .env file in the project root directory:
-
-
-
-LOCALSTACK\_AUTH\_TOKEN=your-localstack-auth-token-here
-
-3. Build \& Run with Docker Compose
+1. Launch Stack
 
 docker compose up --build -d
 
-🧪 Verification \& Testing
 
 
-
-1\. Initialize S3 Bucket
+2. Initialize S3 \& SQS Infrastructure
 
 curl -X POST http://localhost:8080/api/storage/init
 
 
 
-2\. Upload a File
+3. Upload File \& Trigger Asynchronous SQS Event
 
-
-
-curl -X POST "http://localhost:8080/api/storage/upload?fileName=demo.txt" \\
+curl -X POST "http://localhost:8080/api/storage/upload?fileName=demo-event.txt" \\
 
 &#x20;    -H "Content-Type: text/plain" \\
 
-&#x20;    -d "Hello from Spring Boot and AWS S3 inside Docker!"
+&#x20;    -d "Hello from Event-Driven Spring Boot!"
 
 
 
-3\. Download a File
+4. Verify Event Consumption
+
+Stream logs to watch @SqsListener process the message in real time:
 
 
 
-curl "http://localhost:8080/api/storage/download?fileName=demo.txt"
-
-
-
-4\. Inspect Bucket Content via AWS CLI inside Docker
-
-
-
-docker exec -it localstack\_main awslocal s3 ls s3://my-test-bucket
-
-
+docker logs -f cloud\_storage\_app
 
 
 
@@ -131,6 +134,5 @@ docker exec -it localstack\_main awslocal s3 ls s3://my-test-bucket
 
 This project is open-source and available under the MIT License.
 
-\---
-
+---
 

@@ -2,9 +2,13 @@ package com.github.yaliyev.cloudstorageservice.controller;
 
 import com.github.yaliyev.cloudstorageservice.dto.FileMetadataResponse;
 import com.github.yaliyev.cloudstorageservice.service.FileMetadataService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+
 import java.util.UUID;
 
 @RestController
@@ -18,8 +22,8 @@ public class FileMetadataController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FileMetadataResponse>> listAllFiles() {
-        return ResponseEntity.ok(fileMetadataService.getAllFiles());
+    public ResponseEntity<Page<FileMetadataResponse>> listAllFiles(@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(fileMetadataService.getAllFiles(pageable));
     }
 
     @GetMapping("/{id}")

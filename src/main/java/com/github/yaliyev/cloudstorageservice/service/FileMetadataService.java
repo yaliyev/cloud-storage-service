@@ -4,6 +4,8 @@ import com.github.yaliyev.cloudstorageservice.dto.FileMetadataResponse;
 import com.github.yaliyev.cloudstorageservice.entity.FileMetadata;
 import com.github.yaliyev.cloudstorageservice.exception.ResourceNotFoundException;
 import com.github.yaliyev.cloudstorageservice.repository.FileMetadataRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +25,12 @@ public class FileMetadataService {
     }
 
     // List all files WITH download URLs
-    public List<FileMetadataResponse> getAllFiles() {
-        return repository.findAll().stream()
+    public Page<FileMetadataResponse> getAllFiles(Pageable pageable){
+        return repository.findAll(pageable)
                 .map(entity -> {
                     String downloadUrl = storageService.generatePresignedDownloadUrl(entity.getObjectKey());
                     return FileMetadataResponse.fromEntity(entity, downloadUrl);
-                })
-                .toList();
+                });
     }
 
 //    public FileMetadataResponse getFileById(UUID id) {

@@ -17,24 +17,14 @@ public class FileEventListener {
         this.sqsConsumerService = sqsConsumerService;
     }
 
-    // 1. Main Queue Listener - Normal successful processing
     @SqsListener("file-events-queue")
     public void handleS3Event(S3EventNotification notification) {
-        if (notification.records() != null && !notification.records().isEmpty()) {
-            var record = notification.records().get(0);
-            String bucket = record.s3().bucket().name();
-            String key = record.s3().object().key();
-
-            log.info("📩 [MAIN QUEUE] Received S3 event for Bucket: {}, Key: {}", bucket, key);
-
-            // Delegate business logic (e.g., metadata persistence) to your service layer
-            sqsConsumerService.processFileEvent(bucket, key);
-        }
+        log.info("📩 [MAIN QUEUE] Received event from SQS");
+        sqsConsumerService.processS3Event(notification);
     }
 
-    // 2. DLQ Listener - Kept for production alerting if unexpected runtime errors occur
     @SqsListener("file-events-queue-dlq")
     public void handleDeadLetterQueue(S3EventNotification notification) {
-        log.error("🚨 [DLQ ALERT] Message landed in DLQ after exhausting retries! Payload: {}", notification);
+        log.error("🚨 [DLQ ALERT] Poison pill message detected in DLQ! Needs investigation: {}", notification);
     }
 }

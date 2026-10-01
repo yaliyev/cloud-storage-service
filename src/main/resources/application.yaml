@@ -10,6 +10,20 @@ spring:
         secret-key: test
       sqs:
         endpoint: ${AWS_SQS_ENDPOINT:http://localhost:4566}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/cloudstorage}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:your_secure_local_password_here}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
 
 server:
   port: 8080
@@ -33,3 +47,5 @@ logging:
     # Enables DEBUG logs for Spring Cloud AWS SQS framework
     io.awspring.cloud.sqs: DEBUG
     software.amazon.awssdk: WARN
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

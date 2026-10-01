@@ -10,11 +10,8 @@ public class SqsConsumerService {
 
     private static final Logger log = LoggerFactory.getLogger(SqsConsumerService.class);
 
-    @SqsListener("file-events-queue")
-    public void listenToFileEvents(String message) {
-        log.info("Received event from SQS: {}", message);
-
-        // Simulating downstream processing (e.g., image thumbnailing, metadata indexing)
-        log.info("Processing file event successfully!");
+    public void processFileEvent(String bucket, String key) {
+        log.info("Processing file event successfully for bucket: {}, key: {}", bucket, key);
+        // Future business logic: metadata storage in PostgreSQL, image processing, etc.
     }
 }

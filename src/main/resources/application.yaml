@@ -24,3 +24,12 @@ aws:
     bucket-name: my-test-bucket
   sqs:
     endpoint: ${AWS_SQS_ENDPOINT:http://localhost:4566}
+
+logging:
+  level:
+    root: INFO
+    # Enables DEBUG logs for your application package
+    com.example.cloudstorage: DEBUG
+    # Enables DEBUG logs for Spring Cloud AWS SQS framework
+    io.awspring.cloud.sqs: DEBUG
+    software.amazon.awssdk: WARN

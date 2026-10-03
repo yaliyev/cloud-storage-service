@@ -1,5 +1,6 @@
 package com.github.yaliyev.cloudstorageservice.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
@@ -10,11 +11,14 @@ import java.util.Map;
 public class SqsService {
 
     private final SqsClient sqsClient;
-    private final String mainQueueName = "file-events-queue";
-    private final String dlqName = "file-events-queue-dlq";
+    private final String mainQueueName;
+    private final String dlqName;
 
-    public SqsService(SqsClient sqsClient) {
+    public SqsService(SqsClient sqsClient, @Value("${aws.sqs.queue-name}") String mainQueueName,
+                      @Value("${aws.sqs.dlq-name}") String dlqName) {
         this.sqsClient = sqsClient;
+        this.mainQueueName = mainQueueName;
+        this.dlqName = dlqName;
     }
 
     public void initQueue() {

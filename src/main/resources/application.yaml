@@ -38,6 +38,10 @@ aws:
     bucket-name: my-test-bucket
   sqs:
     endpoint: ${AWS_SQS_ENDPOINT:http://localhost:4566}
+    queue-name: file-events-queue
+    dlq-name: file-events-queue-dlq
+    queue-url: http://localhost:4566/000000000000/file-events-queue
+    dlq-url: http://localhost:4566/000000000000/file-events-queue-dlq
 
 logging:
   level:

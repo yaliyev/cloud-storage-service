@@ -25,6 +25,7 @@ dependencies {
     implementation enforcedPlatform('software.amazon.awssdk:bom:2.25.0')
     implementation 'software.amazon.awssdk:s3'
     implementation 'software.amazon.awssdk:sqs'
+    implementation 'software.amazon.awssdk:s3-event-notifications:2.55.6'
 
     // Spring Cloud AWS
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs:4.0.0'
@@ -34,6 +35,9 @@ dependencies {
 
     // PostgreSQL
     implementation 'org.postgresql:postgresql:42.7.13'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:4.1.0'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

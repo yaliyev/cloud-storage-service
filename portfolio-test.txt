@@ -1,0 +1,1 @@
+Testing Redis Idempotency in Cloud Storage Service!

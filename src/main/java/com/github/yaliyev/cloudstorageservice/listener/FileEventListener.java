@@ -1,6 +1,5 @@
 package com.github.yaliyev.cloudstorageservice.listener;
 
-import com.github.yaliyev.cloudstorageservice.dto.S3EventNotification;
 import com.github.yaliyev.cloudstorageservice.service.SqsConsumerService;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import org.slf4j.Logger;
@@ -18,13 +17,13 @@ public class FileEventListener {
     }
 
     @SqsListener("file-events-queue")
-    public void handleS3Event(S3EventNotification notification) {
-        log.info("📩 [MAIN QUEUE] Received event from SQS");
-        sqsConsumerService.processS3Event(notification);
+    public void handleS3Event(String messagePayload) {
+        log.info("📩 [MAIN QUEUE] Received raw SQS payload");
+        sqsConsumerService.processS3Event(messagePayload);
     }
 
     @SqsListener("file-events-queue-dlq")
-    public void handleDeadLetterQueue(S3EventNotification notification) {
-        log.error("🚨 [DLQ ALERT] Poison pill message detected in DLQ! Needs investigation: {}", notification);
+    public void handleDeadLetterQueue(String messagePayload) {
+        log.error("🚨 [DLQ ALERT] Poison pill or unparseable event in DLQ: {}", messagePayload);
     }
 }

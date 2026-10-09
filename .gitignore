@@ -45,3 +45,5 @@ downloaded-hello.txt
 
 # Environment / Secret files (Crucial!)
 .env
+
+**/.terraform/
